@@ -1,0 +1,30 @@
+{
+  "name": "visual-novel-manager",
+  "author": "YangYusen",
+  "version": "0.1.0",
+  "description": "Comprehensive visual novel management for Steam Deck with Hikari Field and DLsite support",
+  "flags": [],
+  "publish": {
+    "tags": ["visual-novel", "game-manager", "hikari-field", "dlsite", "downloads"],
+    "description": "Download, organize, and play visual novels from Hikari Field and DLsite platforms. Features multi-source downloads, Proton management, and multi-language support.",
+    "image": "./assets/icon.png"
+  },
+  "api_version": 1,
+  "license": "MIT",
+  "homepage": "https://github.com/yangyusen/visual-novel-manager",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yangyusen/visual-novel-manager.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yangyusen/visual-novel-manager/issues"
+  },
+  "keywords": [
+    "visual-novel",
+    "steam-deck",
+    "decky-loader",
+    "hikari-field",
+    "dlsite",
+    "game-manager"
+  ]
+}

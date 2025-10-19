@@ -1,0 +1,70 @@
+{
+  "name": "visual-novel-manager",
+  "version": "0.1.0",
+  "description": "Visual Novel Manager for Steam Deck",
+  "type": "module",
+  "scripts": {
+    "build": "shx rm -rf dist && rollup -c",
+    "build-with-rust": "pnpm run build:rust && pnpm run copy:rust && shx rm -rf dist && rollup -c",
+    "build:rust": "cd backend/vn_core && cargo build --release",
+    "copy:rust": "shx cp backend/vn_core/target/release/libvn_core.so vn_core.so || shx cp backend/vn_core/target/release/libvn_core.dylib vn_core.so || shx cp backend/vn_core/target/release/vn_core.dll vn_core.pyd && (strip -s vn_core.so 2>/dev/null || true)",
+    "typecheck": "tsc --noEmit",
+    "verify:artifacts": "node -e \"const fs=require('fs'); const req=['plugin.json','main.py','dist/index.js','vn_core.so']; let ok=1; for (const f of req){ if(!fs.existsSync(f)) { console.error('Missing', f); ok=0; } } process.exitCode = ok?0:1;\"",
+    "build:all": "pnpm run build:rust && pnpm run copy:rust && pnpm run build && pnpm run typecheck && pnpm run verify:artifacts",
+    "prepare:bundle": "pnpm run build:all && shx rm -rf artifacts && shx mkdir -p artifacts/visual-novel-manager && shx cp plugin.json main.py vn_core.so README.md LICENSE package.json pnpm-lock.yaml rollup.config.js Makefile artifacts/visual-novel-manager && shx cp -r assets defaults dist src backend artifacts/visual-novel-manager && shx rm -rf artifacts/visual-novel-manager/backend/vn_core/target",
+    "bundle:tar": "tar -czf artifacts/visual-novel-manager.tar.gz -C artifacts/visual-novel-manager plugin.json main.py dist defaults assets vn_core.so LICENSE",
+    "bundle:zip": "python3 scripts/make_zip.py",
+    "bundle": "pnpm run prepare:bundle && pnpm run bundle:tar && pnpm run bundle:zip && shx rm -rf artifacts/visual-novel-manager",
+    "clean": "shx rm -rf dist vn_core.so artifacts",
+    "watch:front": "rollup -c -w",
+    "watch:back": "cd backend/vn_core && cargo watch -x 'build --release'",
+    "watch": "rollup -c -w",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yangyusen/visual-novel-manager"
+  },
+  "keywords": [
+    "decky",
+    "plugin",
+    "steam-deck",
+    "visual-novel"
+  ],
+  "author": "YangYusen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yangyusen/visual-novel-manager/issues"
+  },
+  "homepage": "https://github.com/yangyusen/visual-novel-manager#readme",
+  "devDependencies": {
+    "@decky/api": "^1.1.2",
+    "@decky/rollup": "^1.0.1",
+    "@decky/ui": "^4.7.2",
+    "@rollup/plugin-commonjs": "^21.1.0",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^13.3.0",
+    "@rollup/plugin-replace": "^4.0.0",
+    "@rollup/plugin-typescript": "^8.5.0",
+    "@types/react": "18.3.3",
+    "@types/webpack": "^5.28.5",
+    "rollup": "^2.79.1",
+    "rollup-plugin-delete": "^2.0.0",
+    "shx": "^0.3.4",
+    "tslib": "^2.6.2",
+    "typescript": "^5.5.3"
+  },
+  "dependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-icons": "^4.12.0"
+  },
+  "pnpm": {
+    "peerDependencyRules": {
+      "ignoreMissing": [
+        "react",
+        "react-dom"
+      ]
+    }
+  }
+}

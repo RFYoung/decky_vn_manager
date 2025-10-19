@@ -1,0 +1,49 @@
+name: Build
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install deps
+        run: pnpm install --frozen-lockfile=false
+
+      - name: Build all
+        run: pnpm run build:all
+
+      - name: Bundle
+        run: pnpm run bundle
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-novel-manager
+          path: |
+            artifacts/*.tar.gz
+            plugin.json
+            main.py
+            dist/**
+            defaults/**
+            assets/**
+            vn_core.so
+
